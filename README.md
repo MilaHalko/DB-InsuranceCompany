@@ -1,4 +1,4 @@
-# Data base Engineering (MMSQL): Insurance Company
+# Data base Engineering (MSSQL): Insurance Company
 Laboratory works to improve my MSSQL skills. The theme and data base name is "InsuranceCompany". 
 ### The work consists phases as:
   - Creating DB ER-diagramme
