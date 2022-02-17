@@ -1,4 +1,4 @@
-# Database (MMSQL): Insurance Company
+# Database (MSSQL): Insurance Company
 Laboratory works to improve my MSSQL skills. The theme and database name is "InsuranceCompany". 
 ## The work consists of phases as:
   - Creating DB ER-diagramme
