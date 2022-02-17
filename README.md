@@ -11,9 +11,7 @@ Laboratory works to improve my MSSQL skills. The theme and data base name is "In
 #
 ## Laboratory #1
 The goal: schematic representation DB as blocks and its relationships.
-
 The final choise of representation: ER-diagramme.
-
 As insurance company is composed of components, the final decision was to break down into main blocks:
   1) Philia
   2) Insurance agent
