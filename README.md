@@ -49,6 +49,7 @@ As this project is also about program features learning, cause I'm a student. Th
   - Converting types: CONVERT / CAST
   - Joins: CROSS / LEFT / RIGHT / INNER
   - UNION
+
 It is important to mention that nested requests were used. I tried to use more than 2 tables during coding. I hope I succeded, so you can check [built-in funcs script](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab3.sql) :bug::bug::bug:
 
 #
