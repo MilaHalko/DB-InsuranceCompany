@@ -29,11 +29,13 @@ In this phase were enough just to create DB main components via MSSQL, which is 
   4) InsType
   5) Salary
   
-  During development, it was decided to add constraints to check dates(!> current date), money(>=0); foreign and primary keys; one trigger for automatical counting and transferring salary data from InsContract to Salary as well. The final result is available [here](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/Tables.sql) 
-  :sparkles::sparkles::sparkles:
+  During development, it was decided to add constraints to check dates(!> current date), money(>=0); foreign and primary keys; one trigger for automatical counting and transferring salary data from InsContract to Salary as well. 
+  
+  The final result is available [here](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/Tables.sql) :sparkles::sparkles::sparkles:
 
-  Secondly, the ultimate phase was inserting generated data into all created tables. In this case, the online service [Mockaroo](https://www.mockaroo.com/) is so helpful and aided me in data generation. Final data is available in different formats. I used sql generated code and csv variants as well. Check SQL [inserting script](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/Insert.sql) 
-  :green_heart::green_heart::green_heart:
+  Secondly, the ultimate phase was inserting generated data into all created tables. In this case, the online service [Mockaroo](https://www.mockaroo.com/) is so helpful and aided me in data generation. Final data is available in different formats. I used sql generated code and csv variants as well. 
+  
+  Check SQL [inserting script](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/Insert.sql) :green_heart::green_heart::green_heart:
 
   #
   ## Laboratory #3
@@ -48,4 +50,7 @@ In this phase were enough just to create DB main components via MSSQL, which is 
   - Aggregate: MAX() /
   - Joins: CROSS / LEFT / RIGHT / INNER
   - UNION
-It is important to mention that nested requests were used. I tried to use more than 2 tables during coding. I hope I succeded, so you can check it  [here](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab3.sql) :bug::bug::bug:
+
+It is important to mention that nested requests were used. I tried to use more than 2 tables during coding. 
+
+I hope I succeded, so you can check it  [here](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab3.sql) :bug::bug::bug:
