@@ -18,4 +18,5 @@ As insurance company is composed of components, the final decision was to break 
   3) Insurance contract
   4) Insurance type
   5) Agent's salary
+
 The final result is presented in [jpg file](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/InsuranceCompanyER.jpg) :fire::fire::fire:
