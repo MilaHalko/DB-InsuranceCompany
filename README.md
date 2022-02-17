@@ -66,7 +66,7 @@ Mostly done, but it is essential to learn how to group, sort datas. The equally 
 
 As result we have a spectre of new foundation for further database engineering using SQL.
 
-Try to check [built-in middle funcs scripts](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab4_funcs.sql) :zap::zap::zap:
+Try to check [built-in middle funcs script](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab4_funcs.sql) :zap::zap::zap:
 
 #
 ## Laboratory work #5
