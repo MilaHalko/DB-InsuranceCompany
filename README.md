@@ -8,7 +8,7 @@
   - Practice of using built-in functions
   - Creating of procedures, functions, triggers and cursors
 
-========================
+#
 ## Laboratory #1
 ### The goal: schematic representation DB as blocks and its relationships.
 ### The final choise of representation: ER-diagramme.
