@@ -1,15 +1,15 @@
 # Data-base-Engineering-MMSQL
 ## Laboratory works to improve my MSSQL skills. The theme and data base name is "InsuranceCompany". 
 ### The work consists phases as:
-  - [Creating DB ER-diagramme] (## Laboratory #1)
+  - [Creating DB ER-diagramme] (#lab1)
   - Creating 5 tables for InsuranceCompany
   - Datas inserting  
   - Practice of using SELECT in many ways
   - Practice of using built-in functions
   - Creating of procedures, functions, triggers and cursors
 
-=======================================================================================================
-## Laboratory #1
+
+## <a name="#lab1"></a>Laboratory #1
 ### The goal: schematic representation DB as blocks and its relationships.
 ### The final choise of representation: ER-diagramme.
 As insurance company is composed of components, the final decision was to break down into main blocks:
