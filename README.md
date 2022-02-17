@@ -1,5 +1,5 @@
 # Data-base-Engineering-MMSQL
-## Laboratory works to improve my MSSQL skills. The theme and data base name is "InsuranceCompany". 
+Laboratory works to improve my MSSQL skills. The theme and data base name is "InsuranceCompany". 
 ### The work consists phases as:
   - Creating DB ER-diagramme #lab1
   - Creating 5 tables for InsuranceCompany
