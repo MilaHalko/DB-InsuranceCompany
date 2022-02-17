@@ -50,7 +50,9 @@ As this project is also about program features learning, cause I'm a student. Th
   - Joins: CROSS / LEFT / RIGHT / INNER
   - UNION
 
-It is important to mention that nested requests were used. I tried to use more than 2 tables during coding. I hope I succeded, so you can check [built-in funcs script](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab3.sql) :bug::bug::bug:
+It is important to mention that nested requests were used. I tried to use more than 2 tables during coding. 
+
+I hope I succeded, so you can check [built-in funcs script](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab3.sql) :bug::bug::bug:
 
 #
 ## Laboratory work #4
@@ -61,6 +63,7 @@ Mostly done, but it is essential to learn how to group, sort datas. The equally 
   - GROUP BY: simple / with few parametrs / with HAVING
   - VIEW creating: from few tables / from other view / ALTER with joins
   - SP functions: sp_help / sp_helptext / sp_depends
+
 As result we have a spectre of new foundation for further database engineering using SQL.
 
 Try to check [built-in middle funcs scripts](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/lab4_funcs.sql) :zap::zap::zap:
