@@ -141,6 +141,11 @@ INSERT INTO InsType (Item, Risk, FkInsContractID) VALUES
 ('Ram 2500', 'Vision-oriented uniform pricing structure', 30)
 GO
 
+insert into InsType(Item, Risk, FkInsContractID) values
+('Car', 'Inverse zero administration toolset', 31),
+('House st.Victory', 'Inverse zero administration toolset', 32),
+('Speakers', 'Inverse zero administration toolset', 33)
+
  SELECT * FROM Philia
  SELECT * FROM Agent
  SELECT * FROM InsType

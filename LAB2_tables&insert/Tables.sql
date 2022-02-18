@@ -1,5 +1,4 @@
 --DROP DATABASE InsuranceCompany
---TRUNCATE TABLE
 --CREATE DATABASE InsuranceCompany
 
 USE master;
