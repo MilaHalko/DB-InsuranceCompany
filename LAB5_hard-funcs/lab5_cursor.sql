@@ -1,9 +1,10 @@
 use master 
 use InsuranceCompany
+go
 
 --CURSORS---------------------------------------------------------------------
 --(1) CREATE CURSOR-----------------------------------------------------------
-alter proc PrintAllAgentsUpperSurname
+create proc PrintAllAgentsUpperSurname
 as
 declare @name nvarchar(50)
 declare @surname nvarchar(50)
@@ -27,3 +28,4 @@ deallocate cur
 go
 
 exec PrintAllAgentsUpperSurname
+go

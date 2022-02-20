@@ -24,12 +24,6 @@ CREATE TABLE Agent (
 );
 GO
 
-DROP TABLE Salary;
-DROP TABLE InsType;
-DROP TABLE InsContract;
-DROP TRIGGER AddSalary;
-GO
-
 CREATE TABLE InsContract (
 	ID int IDENTITY(1,1) PRIMARY KEY,
 	RegistrationDate datetime DEFAULT (getdate()),
@@ -54,18 +48,4 @@ CREATE TABLE Salary (
 	Amount real NOT NULL,
 	FkInsContractID int NOT NULL FOREIGN KEY REFERENCES InsContract(ID)
 );
-GO
-
-CREATE TRIGGER AddSalary 
-	ON InsContract AFTER INSERT
-	AS
-BEGIN
-	DECLARE @InsAmount real
-	DECLARE @TarrifRate real
-	DECLARE @ID int
-	SELECT @InsAmount = (SELECT InsAmount FROM inserted)
-	SELECT @TarrifRate = (SELECT TariffRate FROM inserted)
-	SELECT @ID = (SELECT ID FROM inserted)
-	INSERT INTO Salary(Amount, FkInsContractID) VALUES (@InsAmount * @TarrifRate, @ID)
-END
 GO
