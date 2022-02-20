@@ -75,6 +75,7 @@ So, let's discuss the final step! To make the long story short, I planned to wri
   - [Functions](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/LAB5_hard-funcs/lab5_funcs.sql)
   - [Cursors](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/LAB5_hard-funcs/lab5_cursor.sql)
   - [Triggers](https://github.com/MilaHalko/DB-InsuranceCompany/blob/main/LAB5_hard-funcs/lab5_triggers.sql)
+
 I created some for updating amounts if some info is inserted, updated or deleted; checking if an agent is a foreigner; cycle for printing all agents with upper surnames and their initials.
 But you can check the full script for certain aspect by clicking on the list items above :alien::alien::alien:
 
