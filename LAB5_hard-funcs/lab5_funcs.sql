@@ -3,7 +3,7 @@ use InsuranceCompany
 go
 
 --FUNCTIONS---------------------------------------------------------------------
---(A) FUNC RETURNS SCALAR VALUE-------------------------------------------------
+--a. створити функцію, котра повертає деяке скалярне значення
 create function PhiliaByAgent (@agentID int)
 returns varchar(50)
 as begin
@@ -15,7 +15,7 @@ as begin
 end
 go
 
-select dbo.PhiliaByAgent(7) Philia
+select dbo.PhiliaByAgent(7) as Philia
 go
 
 --CHECKING
@@ -26,7 +26,7 @@ go
 
 
 --------------------------------------------------------------------------------
---(B) FUNC RETURNS TABLE WITH DYNAMIC COLUMN SET -------------------------------
+--b. створити функцію, котра повертає таблицю з динамічним набором стовпців
 create function ItemInfoTableByItem (@item varchar(50))
 returns table
 as 
@@ -47,7 +47,7 @@ go
 
 
 --------------------------------------------------------------------------------
---(C) FUNC RETURNS TABLE SPECIFIED STRUCTURE------------------------------------
+--c. створити функцію, котра повертає таблицю заданої структури
 create function getAgentsItemsByAgentID (@id int)
 returns @AgentsItems table (Agent varchar(100), ContractID int, Item varchar(50), Amount real)
 as begin

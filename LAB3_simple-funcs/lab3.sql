@@ -2,7 +2,9 @@ USE [master]
 USE InsuranceCompany
 GO
 
---SIMPLE
+--------------------------------------------------------------------------------
+--(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)---
+--a. Найпростіші умов
 SELECT FkPhiliaID AS PhiliaID, Surname, Name, Patronymic
 FROM Agent
 WHERE FkPhiliaID = 6
@@ -13,21 +15,27 @@ FROM Philia
 WHERE ID = 4
 GO
 
---COMPARISON
+
+--------------------------------------------------------------------------------
+--b. Операторів порівняння
 SELECT FkInsContractID AS [Contract ID], Amount
 FROM Salary
 WHERE Amount >= 350
 ORDER BY Amount DESC
 GO
 
---COMPARISON + AND|OR|NOT
+
+--------------------------------------------------------------------------------
+--c. Умов з використанням логічних операторів AND, OR та NOT
 SELECT ID, Item 
 FROM InsType
 WHERE ID > 11 AND ID <= 20
 ORDER BY Item DESC
 GO
 
---COMBINATION OF LOGICAL OPERATORS
+
+--------------------------------------------------------------------------------
+--d. Умов з використанням комбінацій логічних операторів
 SELECT ID, FkPhiliaID AS PhiliaID, Name, Surname
 FROM Agent
 WHERE ID >= 25 AND NOT (ID BETWEEN 28 AND 32)
@@ -40,7 +48,9 @@ WHERE InsAmount >= 25 AND NOT (InsAmount BETWEEN 27 AND 35) AND NOT TariffRate B
 ORDER BY InsAmount
 GO
 
---OUTPUT
+
+--------------------------------------------------------------------------------
+--e. З використанням виразів над стовпцями, як в якості новостворених стовпців, так і умовах
 SELECT ID, TRIM(Name) + '*' + TRIM(Surname) + '*' + TRIM(Patronymic) as Name
 FROM Agent 
 WHERE (ID * 2 > 10)
@@ -53,7 +63,9 @@ WHERE TariffRate BETWEEN 8 AND 11
 ORDER BY ID
 GO
 
---SET
+
+--------------------------------------------------------------------------------
+--i. Використання оператора: приналежності множині
 SELECT *
 FROM Agent
 WHERE Name IN ('Haley', 'Marlo', 'Silvia', 'Roderigo', 'Jozef')
@@ -65,7 +77,9 @@ WHERE Item IN ('Cooper', 'Corolla', 'LeSabre', 'Regal', 'Freelander')
 ORDER BY Item
 GO
 
---RANGE
+
+--------------------------------------------------------------------------------
+--ii. Використання оператора: приналежності діапазону
 SELECT Surname, Name, FkPhiliaID AS PhiliaID
 FROM Agent
 WHERE FkPhiliaID BETWEEN 5 AND 10
@@ -78,27 +92,35 @@ WHERE RegistrationDate BETWEEN '2021-10-01' AND '2021-11-30'
 ORDER BY RegistrationDate
 GO
 
---TEMPLATE
+
+--------------------------------------------------------------------------------
+--iii. Використання оператора: відповідності шаблону
 SELECT * 
 FROM Agent
 WHERE Name LIKE 'S%'
 ORDER BY Name
 GO 
 
---EXPRESSION
+
+--------------------------------------------------------------------------------
+--iv. Використання оператора: відповідності регулярному виразу
 SELECT Name, Address, Phone
 FROM Philia
 WHERE Phone LIKE '5%5'
 GO
 
---IS NULL
+
+--------------------------------------------------------------------------------
+--v. Використання оператора: перевірка на невизначене значення
 SELECT ID, Surname, Name, Patronymic
 FROM Agent
 WHERE Patronymic IS NOT NULL AND FkPhiliaID > 10
 GO
 
---2ND
---field and table's selection
+
+--------------------------------------------------------------------------------
+--(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)---
+--a. Використання підзапитів в рядку вибірки полів та вибірки з таблиць
 SELECT a.ID,
 	   Name + ' ' + Surname AS Agent,
 	  (SELECT Name
@@ -116,7 +138,9 @@ WHERE RegistrationDate > '2021-08-01'
 ORDER BY Date
 GO
 
---exist/in
+
+--------------------------------------------------------------------------------
+--b. Використання підзапитів в умовах з конструкціями EXISTS, IN
 SELECT Name + ' ' + Surname AS Name, InsAmount, InsAmount * TariffRate * 0.9 AS Salary
 FROM Agent, InsContract
 WHERE EXISTS (SELECT InsAmount * TariffRate * 0.9
@@ -135,14 +159,22 @@ WHERE Amount IN (SELECT MAX(Amount)
 				WHERE InsContract.ID = FkInsContractID)
 GO
 
---cartesian product 
+
+--------------------------------------------------------------------------------
+--c. Декартовий добуток 
 SELECT Item, Name + ' ' + Surname AS Agent, CONVERT(DATE, RegistrationDate) AS Date
 FROM InsType
 CROSS JOIN Agent
 CROSS JOIN InsContract
 GO
 
---merge tables >2 by '='
+SELECT Item, Name + ' ' + Surname AS Agent, CONVERT(DATE, RegistrationDate) AS Date
+FROM InsType, Agent, InsContract
+GO
+
+
+--------------------------------------------------------------------------------
+--d. З’єднання декількох таблиць (більше 2) за рівністю
 SELECT p.Name AS Philia, Item, a.Name + ' ' + Surname AS Agent
 FROM Philia p, InsType t, Agent a
 WHERE a.FkPhiliaID = p.ID AND t.ID = (SELECT c.FkInsTypeID
@@ -156,7 +188,9 @@ WHERE c.FkInsTypeID = t.ID AND c.ID = s.FkInsContractID
 ORDER BY c.FkAgentID
 GO
 
---merge table >2 by '=' && condition
+
+--------------------------------------------------------------------------------
+--e. З’єднання декількох таблиць (більше 2) за рівністю та умовою відбору
 SELECT Item, CONVERT(DATE, RegistrationDate) AS Date, Phone AS AgentPhone
 FROM InsContract c, InsType t, Agent a
 WHERE c.FkInsTypeID = t.ID 
@@ -173,7 +207,9 @@ WHERE c.FkInsTypeID = t.ID
 	  AND YEAR(RegistrationDate) = 2021
 GO
 
---inner join
+
+--------------------------------------------------------------------------------
+--f. Внутрішнього з’єднання
 SELECT Item, CONVERT(DATE, RegistrationDate) AS Date, Phone AS AgentPhone
 FROM InsContract c
 JOIN Agent a ON a.ID = c.FkAgentID
@@ -187,7 +223,9 @@ JOIN InsType t ON t.ID in(SELECT c.ID FROM InsContract c WHERE FkAgentID = a.ID)
 ORDER BY a.ID
 GO
 
---left join
+
+--------------------------------------------------------------------------------
+--g. Лівого зовнішнього з’єднання
 SELECT a.Name + ' ' + Surname AS Agent, p.ID
 FROM Agent a
 LEFT JOIN Philia p ON p.ID = a.FkPhiliaID
@@ -200,7 +238,9 @@ LEFT JOIN Agent a ON a.ID = s.FkAgentID
 ORDER BY Amount
 GO
 
---right join
+
+--------------------------------------------------------------------------------
+--h. Правого зовнішнього з’єднання
 SELECT Surname, CONVERT(DATE, RegistrationDate) AS Date
 FROM Agent a
 RIGHT JOIN InsContract c ON c.FkAgentID = a.ID
@@ -213,7 +253,9 @@ RIGHT JOIN InsType t ON t.ID IN(SELECT c.ID FROM InsContract c WHERE FkAgentID =
 ORDER BY Surname
 GO
 
---table union
+
+--------------------------------------------------------------------------------
+--i. Об’єднання таблиць
 SELECT ID, Name AS AllNames, 'Agent' AS Status FROM Agent
 UNION
 SELECT ID, Name, 'Philia' FROM Philia

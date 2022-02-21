@@ -2,7 +2,9 @@ USE master
 USE InsuranceCompany
 GO
 
---COUNT
+--------------------------------------------------------------------------------
+--(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)(1)---
+--a. запит з використанням функції COUNT
 SELECT COUNT(*) AS TopSalaryQuantity 
 FROM Salary 
 WHERE Amount > 400
@@ -12,7 +14,9 @@ SELECT COUNT(Address) AS PhiliaAddressesQuantity
 FROM Philia
 GO
 
---SUM
+
+--------------------------------------------------------------------------------
+--b. запит з використанням функції SUM
 SELECT SUM(Amount) AS [Total salary for small amounts]
 FROM Salary 
 WHERE Amount < 200
@@ -25,7 +29,9 @@ JOIN InsContract c ON c.FkAgentID = a.ID
 WHERE p.ID <= 5
 GO
 
---UPPER/LOWER
+
+--------------------------------------------------------------------------------
+--c. запит з використанням функцій UPPER, LOWER
 SELECT UPPER(LEFT(Surname, 1) + LEFT(Name, 1) + LEFT(Patronymic, 1)) as Initials, Surname + ' ' + Name + ' ' + Patronymic AS [Agent Name]
 FROM Agent, InsContract
 WHERE TariffRate * InsAmount > 300 AND Agent.ID = FkAgentID
@@ -36,7 +42,9 @@ FROM InsType
 WHERE LEN(Risk) > 35
 GO
 
---DATES
+
+--------------------------------------------------------------------------------
+--d. запит з використанням функцій для роботи з датами
 SELECT Amount, Item, CONVERT(DATE, RegistrationDate) AS Date
 FROM InsContract c
 JOIN InsType t ON t.ID = c.FkInsTypeID
@@ -45,14 +53,18 @@ WHERE DAY(RegistrationDate) BETWEEN 10 AND 20
 ORDER BY DAY(RegistrationDate)
 GO
 
---GROUP BY 1 COLUMN
+
+--------------------------------------------------------------------------------
+--e. запит з використанням групування по одному стовпцю
 SELECT FkPhiliaID AS PhiliaID, COUNT(*) AS AgentsQuantity
 FROM Agent
 GROUP BY FkPhiliaID
 ORDER BY AgentsQuantity DESC, FkPhiliaID
 GO
 
---GROUP BY COLUMNS
+
+--------------------------------------------------------------------------------
+--f. запит з використанням групування по декільком стовпцям
 SELECT p.ID AS Philia, a.ID AS Agent, 
 	  (select COUNT(*) from InsContract c where c.FkAgentID = a.ID) AS ContractsQuantity
 FROM Agent a
@@ -61,7 +73,9 @@ GROUP BY a.ID, p.ID
 ORDER BY ContractsQuantity desc
 GO 
 
---HAVING
+
+--------------------------------------------------------------------------------
+--g. запит з використанням умови відбору груп HAVING
 SELECT a.Surname, COUNT(c.ID) AS ContractsQuantity
 FROM InsContract c
 JOIN Agent a ON a.ID = c.FkAgentID
@@ -70,16 +84,18 @@ HAVING COUNT(C.ID) >= 2
 ORDER BY COUNT(C.ID) DESC
 GO
 
---SORTING
+
+--------------------------------------------------------------------------------
+--i. запит з використанням сортування по стовпцю
 SELECT Name, Address
 FROM Philia
-ORDER BY Name
+ORDER BY Name DESC
 GO
 
---------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
 
---CREATE VIEW (TABLES)
+--------------------------------------------------------------------------------------
+--(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)---
+--a. створити представлення, котре містить дані з декількох таблиць
 CREATE VIEW ItemFullInfo AS
 SELECT t.ID, Item, 
 	   CONVERT(DATE, RegistrationDate) AS Date, 
@@ -91,10 +107,13 @@ JOIN Agent a ON a.ID = c.FkAgentID
 JOIN Philia p ON p.ID = a.FkPhiliaID
 GO
 
-SELECT * FROM ItemFullInfo
+SELECT * FROM ItemFullInfo ORDER BY ID
 GO
 
---CREATE NEW VIEW FROM OLD
+--DROP VIEW ItemFullInfo
+GO
+--------------------------------------------------------------------------------------
+--b. створити представлення, котре містить дані з декількох таблиць та посилання, котре створене в п.a
 CREATE VIEW ItemPriceInfo AS
 SELECT Item, Date, s.Amount
 FROM ItemFullInfo
@@ -107,7 +126,12 @@ SELECT * FROM ItemPriceInfo
 ORDER BY Item
 GO
 
---ALTER VIEW
+--DROP VIEW ItemPriceInfo
+GO
+
+
+--------------------------------------------------------------------------------------
+--c. модифікувати запити з використанням команди ALTER VIEW
 ALTER VIEW ItemFullInfo AS
 SELECT Item, InsAmount, TariffRate, Amount,
        CONVERT(Date, RegistrationDate) AS Date, Phone, 
@@ -116,10 +140,10 @@ FROM InsContract c
 JOIN InsType t ON t.ID = c.FkInsTypeID
 JOIN Salary s ON s.FkInsContractID = c.ID
 JOIN Agent a ON a.ID = c.FkAgentID
-WHERE Amount > 300
+WHERE Amount > 100
 GO
 
-SELECT * FROM ItemFullInfo
+SELECT * FROM ItemFullInfo ORDER BY Amount
 GO
 
 ALTER VIEW ItemPriceInfo AS
@@ -129,10 +153,12 @@ JOIN InsContract c ON t.ID = c.FkInsTypeID
 JOIN Salary s ON s.FkInsContractID = c.ID
 GO
 
-SELECT * FROM ItemPriceInfo
+SELECT * FROM ItemPriceInfo ORDER BY Amount
 GO
 
---SP_HELP / SP_HELPTEXT / SP_DEPENDS
+
+--------------------------------------------------------------------------------------
+--d. отримати довідникову інформацію про ці представлення з використанням вбудованих процедур (наприклад в MsSQL sp_help, sp_helptexst и sp_depends)S
 sp_help ItemFullInfo
 GO
 sp_helptext ItemFullInfo

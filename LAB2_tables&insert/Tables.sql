@@ -54,6 +54,7 @@ GO
 
 select * from Philia
 
+
 -------------------------------------------------------------------------------------
 CREATE TABLE Agent (
 	ID int IDENTITY(1,1) PRIMARY KEY,
@@ -105,7 +106,7 @@ GO
 --added data
 --------------
 ALTER TABLE InsContract
-ALTER COLUMN FkInsTypeID int NOT NULL
+ALTER COLUMN FkInsTypeID int NULL
 GO
 
 ALTER TABLE InsContract
@@ -134,6 +135,8 @@ WHERE TariffRate * InsAmount = 0
 GO
 
 SELECT * FROM InsContract
+
+
 -------------------------------------------------------------------------------------
 CREATE TABLE InsType (
 	Item varchar(50) NOT NULL,

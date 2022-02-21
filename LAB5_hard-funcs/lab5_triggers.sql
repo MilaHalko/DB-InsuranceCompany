@@ -16,26 +16,22 @@ as begin
 end
 go
 
-insert into InsContract(RegistrationDate, InsAmount, TariffRate, FkAgentID) values
-('2022-01-01', 10.94, 9.35, 20)
-insert into InsType(Item, Risk, FkInsContractID) values
-('Speaker', 'Inverse zero administration toolset', IDENT_CURRENT('InsContract'))
+insert into InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID, FkInsTypeID) values
+('2022-01-01', 10.94, 9.35, 20, 13)
+go
+insert into InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID, FkInsTypeID) values
+('2022-02-11', 15.67, 27.5, 15, 52)
+go
+insert into InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID, FkInsTypeID) values
+('2022-01-25', 25.56, 15.87, 7, 36);
 go
 
-insert into InsContract(RegistrationDate, InsAmount, TariffRate, FkAgentID) values
-('2022-02-11', 15.67, 27.5, 15)
-insert into InsType(Item, Risk, FkInsContractID) values
-('Mac', 'Radical Graphic Interface', 34)
+delete from InsContract where FkInsTypeID = 13 and RegistrationDate = '2022-01-01'
+delete from InsContract where FkInsTypeID = 52 and RegistrationDate = '2022-02-11'
+delete from InsContract where FkInsTypeID = 36 and RegistrationDate = '2022-01-25'
 go
-
-insert into InsContract(RegistrationDate, InsAmount, TariffRate, FkAgentID) values
-('2022-01-25', 25.56, 15.87, 7)
-insert into InsType(Item, Risk, FkInsContractID) values
-('Cafe', 'Empowering customer loyalty', 35)
+select * from InsContract order by id
 go
-
-delete from InsContract where id = 37
-select * from InsContract order by RegistrationDate
 --------------------------------------------------------------------------------
 --(2) UPDATE TRIGGER------------------------------------------------------------
 alter trigger updateSalaryByNewAmountOrTariff
@@ -55,19 +51,15 @@ as begin
 
 		while @@FETCH_STATUS = 0
 		begin
-			if exists(select * from Salary s where s.FkInsContractID in (select c.ID from InsContract c))
+			if exists (select FkInsContractID from Salary s where FkInsContractID = @id)
 			begin
-				update Salary
-				set Amount = @amount * @tariff, 
-					FkAgentID = @agentID
+				update Salary set Amount = @amount * @tariff, FkAgentID = @agentID
 				where Salary.FkInsContractID = @id
-				print 'Updated'
 			end
-			else 
+			else
 			begin
 				insert into Salary(Amount, FkInsContractID, FkAgentID) values 
 				(@amount * @tariff, @id, @agentID)
-				print 'Inserted'
 			end
 			fetch next from cur into @amount, @tariff, @agentID, @id
 		end
@@ -76,38 +68,42 @@ as begin
 end
 go
 
-select c.*, Amount from InsContract c
+select c.*, Amount, s.FkAgentID from InsContract c
 join Salary s on s.FkInsContractID = c.ID
-where id = IDENT_CURRENT('InsContract')
 go
-update InsContract set InsAmount = 24, TariffRate = 13 where id = IDENT_CURRENT('InsContract')
-select c.*, Amount from InsContract c
+update InsContract set InsAmount = 22, TariffRate = 13, FkAgentID = 13 where id = (select max(id) from InsContract) 
+go
+select c.*, Amount, s.FkAgentID from InsContract c
 join Salary s on s.FkInsContractID = c.ID
-where id = IDENT_CURRENT('InsContract')
 go
-
-exec updateContractOnTheSameValue
-select * from Salary
-select *, c.InsAmount * c.TariffRate from InsContract c
 
 
 --------------------------------------------------------------------------------
 --(3) DELETE TRIGGER------------------------------------------------------------
-create trigger deleteInsTypeUpdateContractPrice
-on InsType after delete
+create trigger deleteSalaryUpdateContractPrice
+on Salary after delete
 as begin
-	declare @id int = (select FkInsContractID from deleted)
+	declare @cID int = (select FkInsContractID from deleted)
 	update InsContract 
 	set InsAmount = 0,
 	    TariffRate = 1 
-	where ID = @id
-	print 'Deleted item caused updating price in InsContract and Salary (Amount = 0, Tariff = 1) for ContractID = ' + cast(@id as varchar)
+	where ID = @cID
+	print 'Deleted item caused updating price in InsContract and Salary (Amount = 0, Tariff = 1) for ContractID = ' + cast(@cID as varchar)
 end
 go
 
-select * from InsContract c left join InsType t on t.FkInsContractID = c.ID left join Salary s on s.FkInsContractID = c.ID 
-delete from InsType where FkInsContractID = IDENT_CURRENT('InsContract')
-select * from InsContract c left join InsType t on t.FkInsContractID = c.ID left join Salary s on s.FkInsContractID = c.ID
+select c.ID ContractID, InsAmount, TariffRate, s.ID SalaryID, Amount
+from InsContract c 
+left join Salary s on s.FkInsContractID = c.ID 
+where c.id = 100
+go
+delete Salary where FkInsContractID = 100
+go
+select c.ID ContractID, InsAmount, TariffRate, s.ID SalaryID, Amount
+from InsContract c 
+left join Salary s on s.FkInsContractID = c.ID 
+where c.id = 100
+go
 
-
-create trigger 
+update InsContract set InsAmount = 22, TariffRate = 13 where id = 100 
+go

@@ -2,7 +2,7 @@ use InsuranceCompany
 go
 
 --PROCEDURES--------------------------------------------------------------------
---(A) TEMPORARY TABLE-----------------------------------------------------------
+--a. запит для створення тимчасової таблиці через змінну типу TABLE
  create type agentInfo as table(
  Name varchar(50),
  Surname varchar(50),
@@ -24,7 +24,6 @@ go
  ('Alina', 'Shyvckevich', '6743 Kiev, st.Budivelinyk', '044-873-2834', 12),
  ('Anastasia', 'Tarrantino', '563421 American avenue', '777-435-2643', 3),
  ('Dmytriy', 'Byliko', '3245 Cherkasy st.Richna', '096-564-9831', 7)
-
  select * from Agent
  exec AddAgents @tempAgents
  select * from Agent
@@ -36,8 +35,8 @@ go
 
 
 --------------------------------------------------------------------------------
---(B) IF------------------------------------------------------------------------
-alter proc isForeigner (@Name varchar(50), @Surname varchar(50))
+--b. запит з використанням умовної конструкції IF
+create proc isForeigner (@Name varchar(50), @Surname varchar(50))
 as begin
 	if @Name = (select Name from Agent where Surname = @Surname)
 		begin
@@ -61,7 +60,7 @@ go
 
 
 --------------------------------------------------------------------------------
---(C) WHILE---------------------------------------------------------------------
+--c. запит з використанням циклу WHILE
 create proc topContracts @quantity int
 as begin
 	declare @topC table(ID int, FinalAmount real)
@@ -91,9 +90,12 @@ exec topContracts 10
 exec topContracts 3
 go
 
+select *, c.InsAmount * c.TariffRate as Amount from InsContract c order by Amount desc
+go
+
 
 --------------------------------------------------------------------------------
---(D) PROCEDURE WITHOUT PARAMETRES 
+--d. створення процедури без параметрів
 create proc show3ItemsAfterBest
 as begin
 	select Item, InsAmount * TariffRate as Price
@@ -113,7 +115,7 @@ go
 
 
 --------------------------------------------------------------------------------
---(E) PROCEDURE WITH PARAMETRE
+--e. створення процедури з вхідним параметром
 create proc getPhilliaByName
 @NameAndSurname varchar(100)
 as begin
@@ -138,7 +140,7 @@ go
 
 
 --------------------------------------------------------------------------------
---(F) PROCEDURE WITH PARAMETRE RETURN
+--f. створення процедури з вхідним параметром та RETURN
 create proc numOfContractsForYearAndMonth @year int, @month int
 as begin
 declare @numC int
@@ -156,7 +158,7 @@ go
 
 
 --------------------------------------------------------------------------------
---(G) PROCEDURE FOR TABLE UPDATE
+--g. створення процедури оновлення даних в деякій таблиці БД
 create proc UpdateTariffByContractID @contractID int, @newTariff real
 as begin
 	update InsContract set TariffRate = @newTariff where ID = @contractID
@@ -166,15 +168,16 @@ go
 declare @id int = 5
 exec UpdateTariffByContractID @contractID = @id, @newTariff = 14.12
 
-select ID, TariffRate
-from InsContract
-where ID = @id
+select c.ID, TariffRate, c.InsAmount, s.*
+from InsContract c
+join Salary s on s.FkInsContractID = c.ID
+where c.ID = @id
 go
 
 
 --------------------------------------------------------------------------------
---(H) PROCEDURE FOR DATA SAMPLING
-alter proc selectAgentsByPhilliaID @phID int
+--h. створення процедури, в котрій робиться вибірка даних
+create proc selectAgentsByPhilliaID @phID int
 as begin
 	select a.ID,
 		   a.Surname as Agent, 
