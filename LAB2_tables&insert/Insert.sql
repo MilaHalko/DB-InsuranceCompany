@@ -73,44 +73,9 @@ INSERT INTO Agent VALUES('Mila', 'Halko', 'Viacheslavivna', 'Nyvky pr.Victory 66
 GO
 
 -------------------------------------------------------------------------------------
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-03-16', 32.9, 13.9, 31)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-11-10', 34.59, 5.27, 32)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-01-26', 25.1, 5.67, 33)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-09', 29.48, 10.78, 34)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-11', 22.63, 13.65, 5)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-03', 26.21, 13.61, 6)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-09-18', 35.3, 6.59, 7)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-11', 37.42, 14.03, 8)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-11-08', 21.2, 5.39, 9)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-11-06', 22.82, 10.61, 10)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-02-08', 33.0, 14.2, 11)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-01-17', 22.61, 5.25, 12)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-07', 25.16, 14.05, 13)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-04-02', 35.54, 7.47, 14)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-06-19', 30.51, 5.49, 15)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-05-30', 36.47, 9.58, 16)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-03-15', 33.73, 7.08, 17)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-07-24', 28.79, 13.63, 18)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-22', 38.22, 10.4, 19)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-10-26', 27.26, 6.07, 20)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-03-09', 29.54, 12.21, 21)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-02-27', 21.47, 6.9, 22)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-07-14', 32.14, 10.15, 23)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-03-27', 27.3, 10.64, 24)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-07-18', 28.56, 11.53, 25)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-12-21', 25.45, 8.21, 26)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-09-03', 33.79, 10.45, 27)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-02-13', 32.03, 11.88, 28)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-09-19', 32.06, 14.35, 29)
-INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-03-13', 27.94, 12.15, 30)
-GO
-
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2022-01-13', 20.94, 1.15, 30)
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2022-01-15', 22.94, 11.15, 30)
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2022-01-01', 10.94, 9.35, 20)
-GO
-
-UPDATE InsContract set FkSalaryID = ID
 GO
 
 -------------------------------------------------------------------------------------
@@ -154,9 +119,6 @@ INSERT INTO InsType(Item, Risk, FkInsContractID) values
 GO
 
 -------------------------------------------------------------------------------------
-UPDATE Salary SET FkAgentID = (SELECT I.FkAgentID FROM InsContract I WHERE FkSalaryID = Salary.ID)
-GO
-
 SELECT * FROM Philia
 SELECT * FROM Agent
 SELECT * FROM InsType

@@ -9,8 +9,8 @@ returns varchar(50)
 as begin
 	declare @phName varchar(50)
 	select @phName = Name from Philia
-	where ID = (select FkPhiliaID from Agent a
-				where a.ID = @agentID)
+					 where ID = (select FkPhiliaID from Agent a
+								 where a.ID = @agentID)
 	return (@phName)
 end
 go
@@ -33,26 +33,28 @@ as
 return(select Item, Risk, c.ID as ContractID, 
 			  InsAmount * TariffRate as Amount,
 			  a.Surname as Agent, a.Phone
-from InsType t
-left join InsContract c on c.ID = t.FkInsContractID
-left join Agent a on a.id = c.FkAgentID
-where t.Item = @item)
+	   from InsType t
+	   join InsContract c on c.FkInsTypeID = t.ID
+	   join Agent a on a.id = c.FkAgentID
+	   where t.Item = @item)
 go
 
 select * from ItemInfoTableByItem('Cooper')
-select * from InsType
+go
+
+select * from InsType order by Item
 go
 
 
 --------------------------------------------------------------------------------
 --(C) FUNC RETURNS TABLE SPECIFIED STRUCTURE------------------------------------
-alter function getAgentsItemsByAgentID (@id int)
+create function getAgentsItemsByAgentID (@id int)
 returns @AgentsItems table (Agent varchar(100), ContractID int, Item varchar(50), Amount real)
 as begin
 insert into @AgentsItems select a.Name + ' ' + a.Surname, c.ID, t.Item, InsAmount * TariffRate 
 						 from Agent a
 						 join InsContract c on c.FkAgentID = @id
-						 join InsType t on t.FkInsContractID = c.id
+						 join InsType t on t.ID = c.FkInsTypeID
 						 where a.id = @id
 return
 end
@@ -64,6 +66,6 @@ select * from getAgentsItemsByAgentID(30)
 select a.Name + ' ' + Surname as Agent, c.id as ContractID, t.Item, InsAmount * TariffRate as Amount
 from InsContract c
 join Agent a on a.id = c.FkAgentID
-join InsType t on t.FkInsContractID = c.id 
---order by a.id
+join InsType t on t.ID = c.FkInsTypeID
+order by a.Name
 --where a.id = 30

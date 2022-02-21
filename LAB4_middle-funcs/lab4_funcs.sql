@@ -3,24 +3,26 @@ USE InsuranceCompany
 GO
 
 --COUNT
-SELECT COUNT(*) AS TopSalary 
+SELECT COUNT(*) AS TopSalaryQuantity 
 FROM Salary 
 WHERE Amount > 400
 GO
 
-SELECT COUNT(Address) AS AllAddressesNum 
+SELECT COUNT(Address) AS PhiliaAddressesQuantity
 FROM Philia
 GO
 
 --SUM
-SELECT SUM(Amount) AS TopSalary 
+SELECT SUM(Amount) AS [Total salary for small amounts]
 FROM Salary 
 WHERE Amount < 200
 GO 
 
-SELECT SUM(TariffRate) AS [SUM TariffRate FOR first 5 Philias]
-FROM InsContract, Agent, Philia
-WHERE Philia.ID = Agent.FkPhiliaID AND Agent.ID = InsContract.FkAgentID AND Philia.ID <= 5
+SELECT SUM(TariffRate) AS [Total tariff rate of first 5 Philias]
+FROM Agent a
+JOIN Philia p ON p.ID = a.FkPhiliaID
+JOIN InsContract c ON c.FkAgentID = a.ID
+WHERE p.ID <= 5
 GO
 
 --UPPER/LOWER
@@ -36,32 +38,33 @@ GO
 
 --DATES
 SELECT Amount, Item, CONVERT(DATE, RegistrationDate) AS Date
-FROM Salary, InsType, InsContract
-WHERE InsContract.ID = InsType.FkInsContractID 
-	  AND InsContract.ID = Salary.FkInsContractID 
-	  AND DAY(RegistrationDate) BETWEEN 10 AND 20
+FROM InsContract c
+JOIN InsType t ON t.ID = c.FkInsTypeID
+JOIN Salary s ON s.FkInsContractID = c.ID
+WHERE DAY(RegistrationDate) BETWEEN 10 AND 20
 ORDER BY DAY(RegistrationDate)
 GO
 
 --GROUP BY 1 COLUMN
-SELECT FkPhiliaID AS Philia, COUNT(*) AS AgentsNum
+SELECT FkPhiliaID AS PhiliaID, COUNT(*) AS AgentsQuantity
 FROM Agent
 GROUP BY FkPhiliaID
-ORDER BY AgentsNum DESC
+ORDER BY AgentsQuantity DESC, FkPhiliaID
 GO
 
 --GROUP BY COLUMNS
-SELECT P.NAME AS Philia, Surname AS Agent, SUM(Amount) AS TotalSalary, COUNT(Amount) AS ContractsNum
-FROM Philia P, Agent A, Salary S, InsContract C
-WHERE P.ID = A.FkPhiliaID AND S.FkInsContractID = C.ID AND C.FkAgentID = A.ID
-GROUP BY P.Name, A.Surname 
-ORDER BY A.Surname
+SELECT p.ID AS Philia, a.ID AS Agent, 
+	  (select COUNT(*) from InsContract c where c.FkAgentID = a.ID) AS ContractsQuantity
+FROM Agent a
+JOIN Philia p ON p.ID = a.FkPhiliaID
+GROUP BY a.ID, p.ID
+ORDER BY ContractsQuantity desc
 GO 
 
 --HAVING
-SELECT A.Surname, COUNT(C.ID) AS ContractsNum
-FROM InsContract C, Agent A
-WHERE A.ID = C.FkAgentID
+SELECT a.Surname, COUNT(c.ID) AS ContractsQuantity
+FROM InsContract c
+JOIN Agent a ON a.ID = c.FkAgentID
 GROUP BY Surname
 HAVING COUNT(C.ID) >= 2
 ORDER BY COUNT(C.ID) DESC
@@ -78,38 +81,29 @@ GO
 
 --CREATE VIEW (TABLES)
 CREATE VIEW ItemFullInfo AS
-SELECT Item, CONVERT(DATE, RegistrationDate) AS Date, Agent.Name + Surname AS Agent, Philia.Name AS Philia, Philia.Address AS Address
-FROM InsContract
-JOIN InsType ON InsContract.ID = InsType.FkInsContractID
-JOIN Agent ON Agent.ID = InsContract.FkAgentID
-JOIN Philia ON Philia.ID = Agent.FkPhiliaID
+SELECT t.ID, Item, 
+	   CONVERT(DATE, RegistrationDate) AS Date, 
+	   a.Name + Surname AS Agent, 
+	   p.Name AS Philia, p.Address AS Address
+FROM InsContract c
+JOIN InsType t ON c.FkInsTypeID = t.ID
+JOIN Agent a ON a.ID = c.FkAgentID
+JOIN Philia p ON p.ID = a.FkPhiliaID
 GO
 
 SELECT * FROM ItemFullInfo
 GO
 
-DROP VIEW ItemFullInfo
-GO
-
 --CREATE NEW VIEW FROM OLD
 CREATE VIEW ItemPriceInfo AS
-SELECT Item, Date, Salary.Amount AS Amount
+SELECT Item, Date, s.Amount
 FROM ItemFullInfo
-JOIN Salary ON Salary.FkInsContractID = (SELECT InsContract.ID
-										 FROM InsContract
-										 WHERE InsContract.ID = (SELECT InsType.FkInsContractID 
-																 FROM InsType
-																 WHERE InsType.Item = ItemFullInfo.Item))
+JOIN Salary s ON s.FkInsContractID = (SELECT c.ID FROM InsContract c
+									  WHERE c.FkInsTypeID = (SELECT t.ID FROM InsType t
+															 WHERE t.ID = ItemFullInfo.ID))
 GO
 
 SELECT * FROM ItemPriceInfo
-ORDER BY Item
-GO
-
---ÏÐÎÂÅÐÊÀ
-SELECT Item, Amount
-FROM InsType, Salary
-WHERE InsType.FkInsContractID = Salary.FkInsContractID
 ORDER BY Item
 GO
 
@@ -117,11 +111,11 @@ GO
 ALTER VIEW ItemFullInfo AS
 SELECT Item, InsAmount, TariffRate, Amount,
        CONVERT(Date, RegistrationDate) AS Date, Phone, 
-	   Agent.Name + ' ' + Surname AS Agent, Risk
-FROM InsContract
-JOIN InsType ON InsType.FkInsContractID = InsContract.ID
-JOIN Salary ON Salary.FkInsContractID = InsContract.ID
-JOIN Agent ON Agent.ID = InsContract.FkAgentID
+	   a.Name + ' ' + Surname AS Agent, Risk
+FROM InsContract c
+JOIN InsType t ON t.ID = c.FkInsTypeID
+JOIN Salary s ON s.FkInsContractID = c.ID
+JOIN Agent a ON a.ID = c.FkAgentID
 WHERE Amount > 300
 GO
 
@@ -130,15 +124,12 @@ GO
 
 ALTER VIEW ItemPriceInfo AS
 SELECT Item, Amount, TariffRate, InsAmount AS InsuranceAmount
-FROM InsType
-JOIN InsContract ON InsType.FkInsContractID = InsContract.ID
-JOIN Salary ON Salary.FkInsContractID = InsContract.ID
+FROM InsType t
+JOIN InsContract c ON t.ID = c.FkInsTypeID
+JOIN Salary s ON s.FkInsContractID = c.ID
 GO
 
 SELECT * FROM ItemPriceInfo
-GO
-
-DROP VIEW ItemPriceInfo
 GO
 
 --SP_HELP / SP_HELPTEXT / SP_DEPENDS

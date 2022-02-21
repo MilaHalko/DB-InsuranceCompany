@@ -25,19 +25,19 @@ go
  ('Anastasia', 'Tarrantino', '563421 American avenue', '777-435-2643', 3),
  ('Dmytriy', 'Byliko', '3245 Cherkasy st.Richna', '096-564-9831', 7)
 
- select * from @tempAgents
+ select * from Agent
  exec AddAgents @tempAgents
  select * from Agent
  go
 
  delete Agent
- where ID > (select max(ID) - 4 from Agent)
+ where Surname in ('Challek', 'Shyvckevich', 'Tarrantino', 'Byliko')
  go
 
 
 --------------------------------------------------------------------------------
 --(B) IF------------------------------------------------------------------------
-create proc isForeigner (@Name varchar(50), @Surname varchar(50))
+alter proc isForeigner (@Name varchar(50), @Surname varchar(50))
 as begin
 	if @Name = (select Name from Agent where Surname = @Surname)
 		begin
@@ -45,12 +45,12 @@ as begin
 		set @Patronymic = (select Patronymic from Agent
 						   where Name = @Name and Surname = @Surname)
 		if @Patronymic is not null
-			select @Name + ' ' + @Surname + ' ' + @Patronymic + ' is not foreigner.'
+			print @Name + ' ' + @Surname + ' ' + @Patronymic + ' is not foreigner.'
 		else
-			select @Name + ' ' + @Surname + ' is foreigner.'
+			print @Name + ' ' + @Surname + ' is foreigner.'
 		end
 	else 
-		select 'There is no person named ' + @Name + ' ' + @Surname
+		print 'There is no person named ' + @Name + ' ' + @Surname
 end
 go
 
@@ -79,9 +79,9 @@ as begin
 				  ) as temp
 				  where row = @currQ)
 		insert into @topC (ID, FinalAmount) values 
-		(@id, (select InsAmount * TariffRate 
-			   from InsContract 
-			   where @id = InsContract.ID)) 
+		(@id, 
+		(select InsAmount * TariffRate from InsContract c 
+		 where @id = c.ID)) 
 	end
 	select * from @topC
 end
@@ -98,8 +98,8 @@ create proc show3ItemsAfterBest
 as begin
 	select Item, InsAmount * TariffRate as Price
 	from InsType t
-	join InsContract c on c.ID = t.FkInsContractID
-	order by Price
+	join InsContract c on c.FkInsTypeID = t.ID
+	order by Price desc
 	offset 1 rows
 	fetch next 3 rows only
 end
@@ -107,6 +107,10 @@ go
 
 exec show3ItemsAfterBest
 go
+
+select Item, InsAmount * TariffRate as price from InsContract c join InsType t on t.ID = c.FkInsTypeID order by price desc
+go
+
 
 --------------------------------------------------------------------------------
 --(E) PROCEDURE WITH PARAMETRE
@@ -122,11 +126,14 @@ as begin
 		right join Agent on Agent.FkPhiliaID = Philia.ID
 		where @name = Agent.Name and @sur = Surname
 	else
-		select 'There is no agent named ', @name, @sur, LEN(@name), len(@sur)
+		print 'There is no agent named ' + @name + @sur
 end
 go
 
 exec getPhilliaByName @NameAndSurname = 'Mila Halko'
+go
+
+select * from Agent where Name = 'Mila'
 go
 
 
@@ -144,7 +151,7 @@ go
 
 declare @result int
 exec @result = numOfContractsForYearAndMonth @year = '2021', @month = '10'
-select 'Number of contracts: ' + cast(@result as varchar) 
+print 'Number of contracts: ' + cast(@result as varchar) 
 go
 
 
@@ -167,17 +174,21 @@ go
 
 --------------------------------------------------------------------------------
 --(H) PROCEDURE FOR DATA SAMPLING
-create proc selectAgentsByPhilliaID @phID int
+alter proc selectAgentsByPhilliaID @phID int
 as begin
-	select a.Surname as Agent, 
+	select a.ID,
+		   a.Surname as Agent, 
 		   a.Phone as AgentPhone,
-		   sum(InsAmount * TariffRate)as Salary
+		   round(sum(InsAmount * TariffRate), 2)as Salary
 	from Agent a
 	left join InsContract c on c.FkAgentID = a.ID
 	where a.FkPhiliaID = @phID
-	group by Surname, Phone
+	group by a.ID, Surname, Phone
 end
 go
 
-exec selectAgentsByPhilliaID @phID = 16
+exec selectAgentsByPhilliaID @phID = 7
+go
+
+select p.ID, count(*) as AgentsQuantity from Philia p join Agent a on a.FkPhiliaID = p.ID group by p.ID order by AgentsQuantity desc
 go
