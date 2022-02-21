@@ -13,6 +13,8 @@ CREATE TABLE Philia (
 );
 GO
 
+
+-------------------------------------------------------------------------------------
 CREATE TABLE Agent (
 	ID int IDENTITY(1,1) PRIMARY KEY,
 	Name varchar(50) NOT NULL,
@@ -24,6 +26,8 @@ CREATE TABLE Agent (
 );
 GO
 
+
+-------------------------------------------------------------------------------------
 CREATE TABLE InsContract (
 	ID int IDENTITY(1,1) PRIMARY KEY,
 	RegistrationDate datetime DEFAULT (getdate()),
@@ -34,7 +38,28 @@ CREATE TABLE InsContract (
 	FkAgentID int NOT NULL FOREIGN KEY REFERENCES Agent(ID)
 );
 GO
+--------------
+ALTER TABLE InsContract
+ADD FkSalaryID int FOREIGN KEY REFERENCES Salary(ID)
+--------------
+--added data
+--------------
+ALTER TABLE InsContract
+ALTER COLUMN FkSalaryID int NOT NULL
+GO
 
+--------------
+ALTER TABLE InsContract
+ADD FkInsTypeID int FOREIGN KEY REFERENCES InsType(ID)
+--------------
+--added data
+--------------
+ALTER TABLE InsContract
+ALTER COLUMN FkSalaryID int NOT NULL
+GO
+
+
+-------------------------------------------------------------------------------------
 CREATE TABLE InsType (
 	Item varchar(50) NOT NULL,
 	Risk varchar(50) NOT NULL,
@@ -43,9 +68,39 @@ CREATE TABLE InsType (
 	ON DELETE CASCADE
 );
 GO
+--------------
+ALTER TABLE InsType 
+ADD ID int IDENTITY(1,1) PRIMARY KEY
+GO
+--------------
+ALTER TABLE InsType
+DROP CONSTRAINT UQ__InsType__79EC96B5672C265B
+--------------
+ALTER TABLE InsType 
+DROP CONSTRAINT FK__InsType__FkInsCo__43D61337
+--------------
+ALTER TABLE InsType 
+DROP COLUMN FkInsContractID
+GO
 
+
+-------------------------------------------------------------------------------------
 CREATE TABLE Salary (
 	Amount real NOT NULL,
 	FkInsContractID int NOT NULL FOREIGN KEY REFERENCES InsContract(ID)
 );
 GO
+--------------
+ALTER TABLE Salary 
+ADD ID int IDENTITY(1,1) PRIMARY KEY
+GO
+--------------
+ALTER TABLE Salary
+ADD FkAgentID int FOREIGN KEY REFERENCES Agent(ID)
+--------------
+--added data
+--------------
+ALTER TABLE InsContract
+ALTER COLUMN FkSalaryID int NOT NULL
+GO
+

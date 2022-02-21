@@ -35,6 +35,7 @@ INSERT INTO Philia (Name, Address, Phone) VALUES
 ('Kshlerin, Pfeffer and Lebsack', '91 Grover Crossing', '371-733-7629');
 GO
 
+-------------------------------------------------------------------------------------
 INSERT INTO Agent (Name, Surname, Patronymic, Address, Phone, FkPhiliaID) VALUES 
 ('Shayne', 'Swatheridge', 'Godden', '2694 Amoth Pass', '600-789-2932', 1),
 ('Haley', 'Dewey', 'Bart', '1 Memorial Terrace', '150-399-3734', 2),
@@ -71,6 +72,7 @@ GO
 INSERT INTO Agent VALUES('Mila', 'Halko', 'Viacheslavivna', 'Nyvky pr.Victory 666', '098-765-4321', 7)
 GO
 
+-------------------------------------------------------------------------------------
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-03-16', 32.9, 13.9, 31)
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-11-10', 34.59, 5.27, 32)
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2021-01-26', 25.1, 5.67, 33)
@@ -108,6 +110,10 @@ INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VAL
 INSERT INTO InsContract (RegistrationDate, InsAmount, TariffRate, FkAgentID) VALUES ('2022-01-01', 10.94, 9.35, 20)
 GO
 
+UPDATE InsContract set FkSalaryID = ID
+GO
+
+-------------------------------------------------------------------------------------
 INSERT INTO InsType (Item, Risk, FkInsContractID) VALUES 
 ('Optima', 'Customer-focused solution-oriented benchmark', 1),
 ('GTI', 'Up-sized content-based array', 2),
@@ -141,16 +147,21 @@ INSERT INTO InsType (Item, Risk, FkInsContractID) VALUES
 ('Ram 2500', 'Vision-oriented uniform pricing structure', 30)
 GO
 
-insert into InsType(Item, Risk, FkInsContractID) values
+INSERT INTO InsType(Item, Risk, FkInsContractID) values
 ('Car', 'Inverse zero administration toolset', 31),
 ('House st.Victory', 'Inverse zero administration toolset', 32),
 ('Speakers', 'Inverse zero administration toolset', 33)
+GO
 
- SELECT * FROM Philia
- SELECT * FROM Agent
- SELECT * FROM InsType
- SELECT * FROM InsContract
- SELECT * FROM Salary
- GO
+-------------------------------------------------------------------------------------
+UPDATE Salary SET FkAgentID = (SELECT I.FkAgentID FROM InsContract I WHERE FkSalaryID = Salary.ID)
+GO
+
+SELECT * FROM Philia
+SELECT * FROM Agent
+SELECT * FROM InsType
+SELECT * FROM InsContract
+SELECT * FROM Salary
+GO
 
  

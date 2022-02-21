@@ -3,9 +3,9 @@ USE InsuranceCompany
 GO
 
 --SIMPLE
-SELECT FkPhiliaID AS [Philia ID], Surname, Name, Patronymic
+SELECT FkPhiliaID AS PhiliaID, Surname, Name, Patronymic
 FROM Agent
-WHERE FkPhiliaID = 5
+WHERE FkPhiliaID = 6
 GO
 
 SELECT ID, Name, Address
@@ -21,34 +21,33 @@ ORDER BY Amount DESC
 GO
 
 --COMPARISON + AND|OR|NOT
-SELECT FkInsContractID AS [Contract ID], Item 
+SELECT ID, Item 
 FROM InsType
-WHERE FkInsContractID > 11 AND FkInsContractID <= 20
+WHERE ID > 11 AND ID <= 20
 ORDER BY Item DESC
 GO
 
 --COMBINATION OF LOGICAL OPERATORS
-SELECT ID, FkPhiliaID AS [Philia ID], Name, Surname
+SELECT ID, FkPhiliaID AS PhiliaID, Name, Surname
 FROM Agent
-WHERE ID >= 25 AND NOT (ID BETWEEN 28 AND 32) 
-ORDER BY FkPhiliaID
+WHERE ID >= 25 AND NOT (ID BETWEEN 28 AND 32)
 GO
 
 SELECT * FROM InsContract
-SELECT InsAmount AS Amount, TariffRate AS [Tariff rate], FkAgentID AS [Agent ID] 
+SELECT InsAmount AS Amount, TariffRate, FkAgentID AS AgentID 
 FROM InsContract
 WHERE InsAmount >= 25 AND NOT (InsAmount BETWEEN 27 AND 35) AND NOT TariffRate BETWEEN 7 AND 10
-ORDER BY InsAmount DESC
+ORDER BY InsAmount
 GO
 
 --OUTPUT
-SELECT ID, TRIM(Name) + ' * ' + TRIM(Surname) + ' * ' + TRIM(Patronymic) as Name
+SELECT ID, TRIM(Name) + '*' + TRIM(Surname) + '*' + TRIM(Patronymic) as Name
 FROM Agent 
 WHERE (ID * 2 > 10)
 ORDER BY ID
 GO
 
-SELECT ID AS [Contract ID], InsAmount AS Amount, InsAmount * 2 AS [Doubled amount]
+SELECT ID AS ContractID, InsAmount AS Amount, InsAmount * 2 AS DoubledAmount
 FROM InsContract
 WHERE TariffRate BETWEEN 8 AND 11
 ORDER BY ID
@@ -67,13 +66,13 @@ ORDER BY Item
 GO
 
 --RANGE
-SELECT Surname, Name, FkPhiliaID AS [Philia ID]
+SELECT Surname, Name, FkPhiliaID AS PhiliaID
 FROM Agent
 WHERE FkPhiliaID BETWEEN 5 AND 10
-ORDER BY FkPhiliaID DESC
+ORDER BY FkPhiliaID
 GO
 
-SELECT CONVERT(DATE, RegistrationDate) AS Date, FkAgentID AS [Agent ID], ID AS [Contract ID]
+SELECT CONVERT(DATE, RegistrationDate) AS Date, FkAgentID AS AgentID, ID AS ContractID
 FROM InsContract
 WHERE RegistrationDate BETWEEN '2021-10-01' AND '2021-11-30'
 ORDER BY RegistrationDate
@@ -89,50 +88,49 @@ GO
 --EXPRESSION
 SELECT Name, Address, Phone
 FROM Philia
-WHERE Phone LIKE '5%-___5'
+WHERE Phone LIKE '5%5'
 GO
 
 --IS NULL
-SELECT ID AS [Contract ID], CONVERT(DATE, RegistrationDate) AS Date, TariffRate AS [Tariff rate], InsAmount AS [Amount]
-FROM InsContract
-WHERE TariffRate IS NOT NULL AND RegistrationDate > '2021-11-01'
-ORDER BY RegistrationDate
+SELECT ID, Surname, Name, Patronymic
+FROM Agent
+WHERE Patronymic IS NOT NULL AND FkPhiliaID > 10
 GO
 
 --2ND
 --field and table's selection
-SELECT Name + ' ' + Surname AS Name, 
-	  (SELECT ID
-	   FROM InsContract
-       WHERE FkAgentID = Agent.ID) AS ContractID,
+SELECT a.ID,
+	   Name + ' ' + Surname AS Agent,
 	  (SELECT Name
-	   FROM Philia
-	   WHERE ID = Agent.FkPhiliaID) AS PhiliaID
-FROM Agent
+	   FROM Philia p
+	   WHERE p.ID = FkPhiliaID) AS Philia
+FROM Agent a
 GO
 
-SELECT CONVERT(DATE, RegistrationDate) AS [Date], 
+SELECT CONVERT(DATE, RegistrationDate) AS Date, 
 	  (SELECT Item
-	   FROM InsType
-	   WHERE FkInsContractID = ID) AS Item
+	   FROM InsType t
+	   WHERE FkInsTypeID = t.ID) AS Item
 FROM InsContract
 WHERE RegistrationDate > '2021-08-01'
+ORDER BY Date
 GO
 
 --exist/in
-SELECT Name + ' ' + Surname AS Name, InsAmount * TariffRate * 0.9 AS Salary
+SELECT Name + ' ' + Surname AS Name, InsAmount, InsAmount * TariffRate * 0.9 AS Salary
 FROM Agent, InsContract
 WHERE EXISTS (SELECT InsAmount * TariffRate * 0.9
 			  WHERE InsAmount * TariffRate * 0.9 > 300)
       AND Agent.ID = InsContract.FkAgentID
-ORDER BY Salary DESC
+ORDER BY InsAmount
 GO
 
+
 SELECT Surname, Amount
-FROM Agent, Salary
+FROM Agent a, Salary
 WHERE Amount IN (SELECT MAX(Amount)
 				 FROM Salary)
-	  AND ID = (SELECT FkAgentID
+	  AND a.ID = (SELECT FkAgentID
 				FROM InsContract
 				WHERE InsContract.ID = FkInsContractID)
 GO
@@ -145,69 +143,81 @@ CROSS JOIN InsContract
 GO
 
 --merge tables >2 by '='
-SELECT Philia.Name AS Philia, Item, Agent.Name + ' ' + Agent.Surname AS Agent
-FROM Philia, InsType, Agent
-WHERE Agent.FkPhiliaID = Philia.ID AND InsType.FkInsContractID = (SELECT InsContract.ID
-																  FROM InsContract
-																  WHERE Agent.ID = InsContract.ID)
+SELECT p.Name AS Philia, Item, a.Name + ' ' + Surname AS Agent
+FROM Philia p, InsType t, Agent a
+WHERE a.FkPhiliaID = p.ID AND t.ID = (SELECT c.FkInsTypeID
+									  FROM InsContract c
+									  WHERE a.ID = c.ID)
 GO
 
-SELECT Amount, Item, FkAgentID AS AgentID
-FROM InsType, InsContract, Salary
-WHERE InsContract.ID = InsType.FkInsContractID AND InsContract.ID = Salary.FkInsContractID
-ORDER BY Amount DESC
+SELECT c.FkAgentID AS AgentID, Item, Amount
+FROM InsType t, InsContract c, Salary s
+WHERE c.FkInsTypeID = t.ID AND c.ID = s.FkInsContractID
+ORDER BY c.FkAgentID
 GO
 
 --merge table >2 by '=' && condition
 SELECT Item, CONVERT(DATE, RegistrationDate) AS Date, Phone AS AgentPhone
-FROM InsContract, InsType, Agent 
-WHERE FkInsContractID = InsContract.ID AND FkAgentID = Agent.ID AND RegistrationDate > '2021-08-15'
+FROM InsContract c, InsType t, Agent a
+WHERE c.FkInsTypeID = t.ID 
+	  AND a.ID = c.FkAgentID 
+	  AND RegistrationDate > '2021-08-15'
+ORDER BY RegistrationDate
 GO
 
-SELECT InsContract.ID AS GoldContracts2021, Amount, CONVERT(DATE, RegistrationDate) AS Date
-FROM InsContract, Salary
-WHERE FkInsContractID = InsContract.ID
+SELECT c.ID AS Gold2021, Amount, CONVERT(DATE, RegistrationDate) AS Date
+FROM InsContract c, Salary s, InsType t
+WHERE c.FkInsTypeID = t.ID
+	  AND s.FkInsContractID = c.ID
 	  AND Amount > (SELECT AVG(Amount) FROM Salary)
 	  AND YEAR(RegistrationDate) = 2021
 GO
 
 --inner join
 SELECT Item, CONVERT(DATE, RegistrationDate) AS Date, Phone AS AgentPhone
-FROM InsContract
-JOIN Agent ON Agent.ID = FkAgentID
-JOIN InsType ON InsContract.ID = FkInsContractID
+FROM InsContract c
+JOIN Agent a ON a.ID = c.FkAgentID
+JOIN InsType t ON t.ID = c.FkInsTypeID
 GO
 
-SELECT Agent.ID AS AgentID, Philia.Address AS PhiliaAddress, Item
-FROM Agent
-JOIN Philia ON Philia.ID = FkPhiliaID
-JOIN InsType ON FkInsContractID = (SELECT InsContract.ID FROM InsContract WHERE FkAgentID = Agent.ID)
+SELECT a.ID AS AgentID, p.Address AS PhiliaAddress, Item
+FROM Agent a
+JOIN Philia p ON p.ID = a.FkPhiliaID
+JOIN InsType t ON t.ID in(SELECT c.ID FROM InsContract c WHERE FkAgentID = a.ID)
+ORDER BY a.ID
 GO
 
 --left join
-SELECT Name + ' ' + Surname AS Agent, Item
-FROM Agent
-LEFT JOIN InsType ON FkInsContractID = (SELECT InsContract.ID FROM InsContract WHERE FkAgentID = Agent.ID)
-ORDER BY Surname
+SELECT a.Name + ' ' + Surname AS Agent, p.ID
+FROM Agent a
+LEFT JOIN Philia p ON p.ID = a.FkPhiliaID
+ORDER BY a.Name
 GO
 
 SELECT Surname AS Agent, Amount * 0.7 AS Salary
-FROM Agent
-LEFT JOIN Salary ON FkInsContractID = (SELECT InsContract.ID FROM InsContract WHERE FkAgentID = Agent.ID) 
+FROM Salary s
+LEFT JOIN Agent a ON a.ID = s.FkAgentID
 ORDER BY Amount
 GO
 
 --right join
-SELECT CONVERT(DATE, RegistrationDate) AS Date, Surname
-FROM InsContract
-RIGHT JOIN Agent ON FkAgentID = Agent.ID
+SELECT Surname, CONVERT(DATE, RegistrationDate) AS Date
+FROM Agent a
+RIGHT JOIN InsContract c ON c.FkAgentID = a.ID
 ORDER BY Date
 GO
 
+SELECT Name + ' ' + Surname AS Agent, Item
+FROM Agent a
+RIGHT JOIN InsType t ON t.ID IN(SELECT c.ID FROM InsContract c WHERE FkAgentID = a.ID)
+ORDER BY Surname
+GO
+
 --table union
-SELECT Name AS AllNames FROM Agent
+SELECT ID, Name AS AllNames, 'Agent' AS Status FROM Agent
 UNION
-SELECT Name FROM Philia
+SELECT ID, Name, 'Philia' FROM Philia
 UNION
-SELECT Item FROM InsType
+SELECT ID, Item, 'Item' FROM InsType
+ORDER BY Status
 GO
