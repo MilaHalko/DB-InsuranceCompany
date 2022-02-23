@@ -45,7 +45,7 @@ DROP CONSTRAINT CH_Philia_Size
 GO
 
 ALTER TABLE Philia 
-DROP CONSTRAINT DF__Philia__Size__37FA4C37
+DROP CONSTRAINT DF__Philia__Size__6B79F03D
 GO
 
 ALTER TABLE Philia
@@ -66,6 +66,9 @@ CREATE TABLE Agent (
 	FkPhiliaID int NOT NULL FOREIGN KEY REFERENCES Philia(ID)
 );
 GO
+
+select * from Agent
+go
 
 ALTER TABLE Agent
 ADD temp int
@@ -135,7 +138,7 @@ WHERE TariffRate * InsAmount = 0
 GO
 
 SELECT * FROM InsContract
-
+go
 
 -------------------------------------------------------------------------------------
 CREATE TABLE InsType (

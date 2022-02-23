@@ -1,3 +1,4 @@
+use master
 use InsuranceCompany
 go
 
@@ -135,7 +136,7 @@ go
 exec getPhilliaByName @NameAndSurname = 'Mila Halko'
 go
 
-select * from Agent where Name = 'Mila'
+select * from Agent where Name = 'fg'
 go
 
 
@@ -166,7 +167,7 @@ end
 go
 
 declare @id int = 5
-exec UpdateTariffByContractID @contractID = @id, @newTariff = 14.12
+exec UpdateTariffByContractID @contractID = @id, @newTariff = 14.15
 
 select c.ID, TariffRate, c.InsAmount, s.*
 from InsContract c
@@ -190,7 +191,7 @@ as begin
 end
 go
 
-exec selectAgentsByPhilliaID @phID = 7
+exec selectAgentsByPhilliaID @phID = 6
 go
 
 select p.ID, count(*) as AgentsQuantity from Philia p join Agent a on a.FkPhiliaID = p.ID group by p.ID order by AgentsQuantity desc

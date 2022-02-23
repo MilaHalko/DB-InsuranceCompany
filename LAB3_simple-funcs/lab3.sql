@@ -20,7 +20,7 @@ GO
 --b. Операторів порівняння
 SELECT FkInsContractID AS [Contract ID], Amount
 FROM Salary
-WHERE Amount >= 350
+WHERE Amount >= 211
 ORDER BY Amount DESC
 GO
 
@@ -44,10 +44,13 @@ GO
 SELECT * FROM InsContract
 SELECT InsAmount AS Amount, TariffRate, FkAgentID AS AgentID 
 FROM InsContract
-WHERE InsAmount >= 25 AND NOT (InsAmount BETWEEN 27 AND 35) AND NOT TariffRate BETWEEN 7 AND 10
+WHERE InsAmount >= 20 AND NOT (InsAmount BETWEEN 23 AND 24) AND NOT TariffRate BETWEEN 7 AND 10
 ORDER BY InsAmount
 GO
-
+SELECT InsAmount AS Amount, TariffRate, FkAgentID AS AgentID 
+FROM InsContract
+ORDER BY InsAmount
+GO
 
 --------------------------------------------------------------------------------
 --e. З використанням виразів над стовпцями, як в якості новостворених стовпців, так і умовах
@@ -116,7 +119,8 @@ SELECT ID, Surname, Name, Patronymic
 FROM Agent
 WHERE Patronymic IS NOT NULL AND FkPhiliaID > 10
 GO
-
+select * from agent
+go
 
 --------------------------------------------------------------------------------
 --(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)(2)---
@@ -144,7 +148,7 @@ GO
 SELECT Name + ' ' + Surname AS Name, InsAmount, InsAmount * TariffRate * 0.9 AS Salary
 FROM Agent, InsContract
 WHERE EXISTS (SELECT InsAmount * TariffRate * 0.9
-			  WHERE InsAmount * TariffRate * 0.9 > 300)
+			  WHERE InsAmount * TariffRate * 0.9 > 100)
       AND Agent.ID = InsContract.FkAgentID
 ORDER BY InsAmount
 GO

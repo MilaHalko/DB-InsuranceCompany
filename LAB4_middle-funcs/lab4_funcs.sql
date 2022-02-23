@@ -7,7 +7,7 @@ GO
 --a. запит з використанням функції COUNT
 SELECT COUNT(*) AS TopSalaryQuantity 
 FROM Salary 
-WHERE Amount > 400
+WHERE Amount > 200
 GO
 
 SELECT COUNT(Address) AS PhiliaAddressesQuantity
@@ -34,12 +34,12 @@ GO
 --c. запит з використанням функцій UPPER, LOWER
 SELECT UPPER(LEFT(Surname, 1) + LEFT(Name, 1) + LEFT(Patronymic, 1)) as Initials, Surname + ' ' + Name + ' ' + Patronymic AS [Agent Name]
 FROM Agent, InsContract
-WHERE TariffRate * InsAmount > 300 AND Agent.ID = FkAgentID
+WHERE TariffRate * InsAmount > 200 AND Agent.ID = FkAgentID
 GO
 
 SELECT UPPER(Item) AS Item, LOWER(Risk) AS Risk
 FROM InsType
-WHERE LEN(Risk) > 35
+WHERE LEN(Risk) > 30
 GO
 
 
@@ -70,7 +70,7 @@ SELECT p.ID AS Philia, a.ID AS Agent,
 FROM Agent a
 JOIN Philia p ON p.ID = a.FkPhiliaID
 GROUP BY a.ID, p.ID
-ORDER BY ContractsQuantity desc
+ORDER BY p.ID
 GO 
 
 
@@ -114,10 +114,10 @@ GO
 GO
 --------------------------------------------------------------------------------------
 --b. створити представлення, котре містить дані з декількох таблиць та посилання, котре створене в п.a
-CREATE VIEW ItemPriceInfo AS
+alter VIEW ItemPriceInfo AS
 SELECT Item, Date, s.Amount
 FROM ItemFullInfo
-JOIN Salary s ON s.FkInsContractID = (SELECT c.ID FROM InsContract c
+JOIN Salary s ON s.FkInsContractID in (SELECT c.ID FROM InsContract c
 									  WHERE c.FkInsTypeID = (SELECT t.ID FROM InsType t
 															 WHERE t.ID = ItemFullInfo.ID))
 GO

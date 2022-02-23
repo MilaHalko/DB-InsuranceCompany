@@ -32,6 +32,7 @@ delete from InsContract where FkInsTypeID = 36 and RegistrationDate = '2022-01-2
 go
 select * from InsContract order by id
 go
+select * from salary order by FkInsContractID
 --------------------------------------------------------------------------------
 --(2) UPDATE TRIGGER------------------------------------------------------------
 alter trigger updateSalaryByNewAmountOrTariff

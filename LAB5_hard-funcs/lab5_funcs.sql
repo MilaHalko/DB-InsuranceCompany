@@ -15,7 +15,7 @@ as begin
 end
 go
 
-select dbo.PhiliaByAgent(7) as Philia
+select dbo.PhiliaByAgent(7) Philia
 go
 
 --CHECKING
